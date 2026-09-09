@@ -1,3 +1,5 @@
+import os
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -101,6 +103,15 @@ def admin_state(store: AdminStateStore = Depends(get_admin_store)) -> AdminState
     return store.load()
 
 
+@router.get("/api/admin/runtime")
+def admin_runtime() -> dict:
+    real_retraining = os.getenv("FRAUD_API_ENABLE_RETRAINING", "false").lower() == "true"
+    return {
+        "real_retraining_enabled": real_retraining,
+        "mode": "training" if real_retraining else "portfolio_demo",
+    }
+
+
 @router.get("/api/pipeline/results")
 def pipeline_results() -> dict:
     return pipeline_result_context()
@@ -129,7 +140,8 @@ def submit_parameter_draft(
     store: AdminStateStore = Depends(get_admin_store),
 ) -> dict:
     try:
-        draft, job, candidate = store.submit_retraining(draft_id)
+        run_pipeline = os.getenv("FRAUD_API_ENABLE_RETRAINING", "false").lower() == "true"
+        draft, job, candidate = store.submit_retraining(draft_id, run_pipeline=run_pipeline)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     return {
@@ -168,7 +180,8 @@ def retrain_from_snapshot(
                 "note": f"Reproduced from snapshot {source.version} with the same parameters.",
             }
         )
-        draft, job, candidate = store.submit_retraining(draft.id)
+        run_pipeline = os.getenv("FRAUD_API_ENABLE_RETRAINING", "false").lower() == "true"
+        draft, job, candidate = store.submit_retraining(draft.id, run_pipeline=run_pipeline)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return {"draft": draft, "job": job, "candidate": candidate}

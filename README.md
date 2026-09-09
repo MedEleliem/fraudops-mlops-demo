@@ -13,9 +13,13 @@ The project is built to demonstrate practical data science and MLOps skills:
 
 ## Live Demo
 
-Production demo: https://fraudops-mlops-demo.onrender.com
+Production serving demo: https://fraudops-mlops-demo.onrender.com
 
 API health check: https://fraudops-mlops-demo.onrender.com/health
+
+Admin/model registry demo: coming after the second Render service is deployed.
+
+The admin demo runs in portfolio mode on free hosting: parameter changes create traceable candidate versions and registry metadata without launching the heavier DVC/MLflow retraining job.
 
 ## Live Demo Deployment
 

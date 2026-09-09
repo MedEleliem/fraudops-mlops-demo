@@ -129,20 +129,22 @@ class AdminStateStore:
         version_dir = Path("models/versions") / version_id
         required = [version_dir / "logit.pkl", version_dir / "finalvar.pkl", version_dir / "manifest.json"]
         missing = [str(path) for path in required if not path.exists()]
-        if missing:
+        demo_approval = os.getenv("FRAUD_API_ENABLE_RETRAINING", "false").lower() != "true"
+        if missing and not demo_approval:
             raise ValueError(f"Cannot approve model; missing serving artifacts: {', '.join(missing)}")
 
-        if production_dir.exists():
+        if not demo_approval and production_dir.exists():
             archive_dir = production_dir.with_name(f"{production_dir.name}_previous")
             if archive_dir.exists():
                 shutil.rmtree(archive_dir)
             shutil.move(str(production_dir), str(archive_dir))
         production_dir.mkdir(parents=True, exist_ok=True)
 
-        for artifact in selected.artifacts:
-            source = Path(artifact.path)
-            if source.exists():
-                shutil.copy2(source, production_dir / source.name)
+        if not demo_approval:
+            for artifact in selected.artifacts:
+                source = Path(artifact.path)
+                if source.exists():
+                    shutil.copy2(source, production_dir / source.name)
 
         manifest_path = production_dir / "manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
@@ -150,6 +152,9 @@ class AdminStateStore:
         manifest["serving_image"] = f"fraud-serving:{version_id}"
         manifest["threshold"] = selected.threshold
         manifest["approved_at"] = utc_now()
+        if demo_approval and missing:
+            manifest["approval_mode"] = "portfolio_demo_metadata_only"
+            manifest["missing_serving_artifacts"] = missing
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
         registry.active_version = version_id
