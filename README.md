@@ -11,6 +11,12 @@ The project is built to demonstrate practical data science and MLOps skills:
 - Docker deployment for a live web demo
 - DVC/MLflow-oriented retraining and experiment tracking workflow
 
+## Live Demo
+
+Production demo: https://fraudops-mlops-demo.onrender.com
+
+API health check: https://fraudops-mlops-demo.onrender.com/health
+
 ## Live Demo Deployment
 
 The recommended free deployment path is the **serving API** using Render Free Web Services and `Dockerfile.serving`.
