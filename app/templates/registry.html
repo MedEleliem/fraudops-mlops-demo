@@ -23,7 +23,7 @@
           <a href="/runs"><i data-lucide="git-compare-arrows"></i><span>Runs & différences</span></a>
           <a href="#registry"><i data-lucide="history"></i><span>Versions</span></a>
           <a href="#parameters"><i data-lucide="sliders-horizontal"></i><span>Nouveau run</span></a>
-          <a href="/project"><i data-lucide="presentation"></i><span>Présentation</span></a>
+          <a href="/"><i data-lucide="presentation"></i><span>Présentation</span></a>
           <a href="/docs"><i data-lucide="braces"></i><span>API</span></a>
         </nav>
         <div class="side-release">
@@ -41,7 +41,7 @@
             <p>{{ registry.versions|length }} version{{ 's' if registry.versions|length != 1 else '' }} enregistrée{{ 's' if registry.versions|length != 1 else '' }} · Production : {{ active.version if has_production else 'non définie' }}</p>
           </div>
           <div class="top-actions">
-            <a class="button subtle" href="/project"><i data-lucide="play-circle"></i>Voir le projet</a>
+            <a class="button subtle" href="/"><i data-lucide="play-circle"></i>Voir le projet</a>
             <a class="button primary" href="#parameters"><i data-lucide="plus"></i>Nouveau run</a>
           </div>
         </header>

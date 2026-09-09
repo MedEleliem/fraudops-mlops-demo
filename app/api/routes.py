@@ -187,6 +187,7 @@ def retrain_from_snapshot(
     return {"draft": draft, "job": job, "candidate": candidate}
 
 
+@router.get("/", response_class=HTMLResponse)
 @router.get("/project", response_class=HTMLResponse)
 @router.get("/presentation", response_class=HTMLResponse)
 def project_story(request: Request, settings: Settings = Depends(get_settings)) -> HTMLResponse:
@@ -292,7 +293,7 @@ def runs_page(
     )
 
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("/dashboard", response_class=HTMLResponse)
 def registry_page(
     request: Request,
     settings: Settings = Depends(get_settings),

@@ -57,7 +57,7 @@ def test_model_diff_endpoint():
 
 
 def test_registry_page_renders():
-    response = client.get("/")
+    response = client.get("/dashboard")
 
     assert response.status_code == 200
     assert "Aucun modèle enregistré" in response.text
@@ -69,7 +69,7 @@ def test_standalone_project_presentation_renders():
     response = client.get("/presentation")
 
     assert response.status_code == 200
-    assert "Détecter l’exception" in response.text
+    assert "Transformer un modèle ML en service gouverné" in response.text
     assert "Le laboratoire ne touche jamais le service client" in response.text
 
 
@@ -99,9 +99,12 @@ def test_first_candidate_renders_without_production(isolated_registry):
     )
 
     dashboard = client.get("/")
+    control = client.get("/dashboard")
     runs = client.get("/runs")
 
     assert dashboard.status_code == 200
-    assert "Modèles de détection de fraude" in dashboard.text
+    assert "Transformer un modèle ML en service gouverné" in dashboard.text
+    assert control.status_code == 200
+    assert "Modèles de détection de fraude" in control.text
     assert runs.status_code == 200
     assert "Runs & différences" in runs.text

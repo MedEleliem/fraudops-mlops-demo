@@ -14,18 +14,18 @@
   <body>
     <header class="site-nav">
       <a class="brand" href="#top"><span><i data-lucide="shield-check"></i></span>FraudOps</a>
-      <nav><a href="#mission">Mission</a><a href="#pipeline">Parcours</a><a href="#performance">Résultats</a><a href="#architecture">Architecture</a></nav>
-      <a class="nav-cta" href="#architecture">Explorer <i data-lucide="arrow-down"></i></a>
+      <nav><a href="#mission">Mission</a><a href="#pipeline">Parcours</a><a href="#performance">Résultats</a><a href="#deployment">Déploiement</a></nav>
+      <a class="nav-cta" href="/dashboard">Manipuler <i data-lucide="arrow-right"></i></a>
     </header>
 
     <main>
       <section class="hero" id="top">
         <div class="hero-grid"></div>
         <div class="hero-content reveal">
-          <p class="eyebrow"><span></span>Détection de fraude, pilotée de bout en bout</p>
-          <h1>Détecter l’exception.<br><em>Garder la décision humaine.</em></h1>
-          <p class="lead">FraudOps relie les données, l’entraînement, la validation et la prédiction en temps réel dans une chaîne traçable.</p>
-          <div class="hero-actions"><a href="#mission" class="button primary">Découvrir le projet <i data-lucide="arrow-down-right"></i></a><span>Deux plateformes · Une seule source de vérité</span></div>
+          <p class="eyebrow"><span></span>PMO · MLOps · Détection de fraude</p>
+          <h1>Transformer un modèle ML en service gouverné.</h1>
+          <p class="lead">FraudOps présente le passage d’un ancien projet de scoring fraude, déjà structuré avec CI/CD et pipeline reproductible, vers une plateforme déployée avec environnement de test, environnement de production et pilotage des versions modèle.</p>
+          <div class="hero-actions"><a href="/dashboard" class="button primary">Ouvrir le control plane <i data-lucide="arrow-right"></i></a><span>Présentation d’abord · Manipulation ensuite</span></div>
         </div>
         <div class="signal-stage" aria-label="Flux de transactions animé">
           <div class="signal-ring ring-one"></div><div class="signal-ring ring-two"></div><div class="signal-ring ring-three"></div>
@@ -36,22 +36,22 @@
       </section>
 
       <section class="mission section" id="mission">
-        <div class="section-intro reveal"><p class="eyebrow">Le point de départ</p><h2>Dans 284 807 transactions, les signaux utiles sont presque invisibles.</h2><p>Le défi n’est pas seulement de prédire. Il faut préserver la détection des fraudes rares, expliquer chaque version et déployer sans interrompre le service.</p></div>
+        <div class="section-intro reveal"><p class="eyebrow">Le point de départ</p><h2>Un projet ML solide ne suffit pas toujours à convaincre un client final.</h2><p>L’ancien repository contenait déjà une base sérieuse: pipeline de préparation, resampling, entraînement, tests, DVC et logique CI/CD. La donnée actuelle reste une donnée publique de démonstration: le dataset Kaggle credit card fraud, stocké hors Git via un remote DVC Google Drive. La nouvelle étape a été de rendre ce travail lisible comme un produit: deux environnements, une gouvernance des paramètres, un registre de versions et une interface de scoring utilisable.</p></div>
         <div class="numbers">
           <article class="number-card reveal"><i data-lucide="rows-3"></i><strong data-count="284807">0</strong><span>transactions analysées</span></article>
           <article class="number-card reveal"><i data-lucide="scan-search"></i><strong data-count="492">0</strong><span>fraudes observées</span></article>
-          <article class="number-card reveal accent"><i data-lucide="radio-tower"></i><strong>&lt; 100 ms</strong><span>objectif de prédiction</span></article>
+          <article class="number-card reveal accent"><i data-lucide="hard-drive-download"></i><strong>150 MB</strong><span>dataset tracké par DVC, hors GitHub</span></article>
         </div>
       </section>
 
       <section class="pipeline section" id="pipeline">
         <div class="section-intro reveal"><p class="eyebrow">Du changement à la production</p><h2>Chaque décision laisse une trace.</h2></div>
         <div class="pipeline-line">
-          <article class="step reveal"><span>01</span><i data-lucide="sliders-horizontal"></i><h3>Configurer</h3><p>L’admin ajuste un seuil ou une stratégie d’échantillonnage.</p></article>
-          <article class="step reveal"><span>02</span><i data-lucide="git-branch"></i><h3>Reproduire</h3><p>DVC reconstruit le pipeline avec les mêmes données et paramètres.</p></article>
-          <article class="step reveal"><span>03</span><i data-lucide="brain-circuit"></i><h3>Entraîner</h3><p>Le modèle produit ses scores et ses artefacts versionnés.</p></article>
-          <article class="step reveal"><span>04</span><i data-lucide="git-compare-arrows"></i><h3>Comparer</h3><p>MLflow rapproche la candidate de la dernière version validée.</p></article>
-          <article class="step reveal"><span>05</span><i data-lucide="rocket"></i><h3>Livrer</h3><p>Une image immuable rejoint le serveur de prédiction.</p></article>
+          <article class="step reveal"><span>01</span><i data-lucide="sliders-horizontal"></i><h3>Configurer</h3><p>Le data scientist ajuste le seuil, la stratégie de resampling ou les paramètres de sélection.</p></article>
+          <article class="step reveal"><span>02</span><i data-lucide="flask-conical"></i><h3>Tester</h3><p>La candidate vit d’abord dans un environnement de test, séparé du service client.</p></article>
+          <article class="step reveal"><span>03</span><i data-lucide="git-branch"></i><h3>Versionner</h3><p>Paramètres, métriques, artefacts et notes de validation restent attachés à une version précise.</p></article>
+          <article class="step reveal"><span>04</span><i data-lucide="git-compare-arrows"></i><h3>Comparer</h3><p>La candidate est comparée à la production avant toute promotion.</p></article>
+          <article class="step reveal"><span>05</span><i data-lucide="rocket"></i><h3>Promouvoir</h3><p>Seule une version validée rejoint l’environnement de production utilisé par le client final.</p></article>
         </div>
       </section>
 
@@ -73,7 +73,17 @@
         </div>
       </section>
 
-      <section class="closing section reveal"><p class="eyebrow">La promesse</p><h2>Une fraude détectée.<br>Une version expliquée.<br>Une décision assumée.</h2><div class="closing-mark"><i data-lucide="shield-check"></i></div></section>
+      <section class="performance section" id="deployment">
+        <div class="performance-head reveal"><div><p class="eyebrow">Déploiement réel</p><h2>Le notebook devient une chaîne exploitable par une équipe data.</h2></div><p>Dans une architecture cible, FraudOps peut s’appuyer sur un serveur big data, un datamart fraude, Airflow pour l’orchestration et un feature store pour garantir que les variables utilisées en entraînement sont les mêmes que celles utilisées en serving.</p></div>
+        <div class="chart-grid">
+          <article class="chart-card reveal"><div class="chart-title"><div><span>Data platform</span><strong>Ingestion et datamart</strong></div></div><p class="chart-note"><i data-lucide="database"></i>La démo s’appuie sur un dataset public stocké via DVC/Google Drive. En production, les transactions arrivent depuis un data lake, un warehouse ou un flux batch/streaming. Les transformations construisent un datamart fraude stable, auditable et réutilisable.</p></article>
+          <article class="chart-card reveal"><div class="chart-title"><div><span>Orchestration</span><strong>Airflow et CI/CD</strong></div></div><p class="chart-note"><i data-lucide="workflow"></i>Airflow orchestre l’ingestion, les contrôles qualité, le calcul des features, le retraining et les validations. GitHub Actions garde la partie code, tests et packaging sous contrôle.</p></article>
+          <article class="chart-card reveal"><div class="chart-title"><div><span>Model store</span><strong>Plusieurs modèles, un seul cadre</strong></div></div><p class="chart-note"><i data-lucide="boxes"></i>Régression logistique, random forest, gradient boosting ou modèles spécialisés peuvent coexister dans le registry. Chaque version garde ses paramètres, métriques, artefacts et seuil de décision.</p></article>
+          <article class="chart-card reveal"><div class="chart-title"><div><span>End client</span><strong>Serving contrôlé</strong></div></div><p class="chart-note"><i data-lucide="shield-check"></i>Le client final interroge uniquement l’API de production. L’équipe data peut manipuler, tester et comparer les modèles sans casser le service consommé par le métier.</p></article>
+        </div>
+      </section>
+
+      <section class="closing section reveal"><p class="eyebrow">Passer à l’action</p><h2>Comprendre le projet.<br>Manipuler le modèle.<br>Tester le client.</h2><div class="hero-actions"><a href="/dashboard" class="button primary">Accéder au dashboard admin <i data-lucide="arrow-right"></i></a><a href="https://fraudops-mlops-demo.onrender.com" class="button primary">Tester le scoring client <i data-lucide="external-link"></i></a></div><div class="closing-mark"><i data-lucide="shield-check"></i></div></section>
     </main>
     <footer><strong>FraudOps</strong><span>Projet MLOps · Détection de fraude bancaire</span><span>2026</span></footer>
 
