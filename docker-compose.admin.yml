@@ -1,0 +1,29 @@
+services:
+  fraud-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    image: fraud-admin-api:local
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./results:/app/results
+      - ./creditcard.csv:/app/creditcard.csv:ro
+      - ./mlflow.db:/app/mlflow.db
+    environment:
+      MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+
+  fraud-training:
+    build:
+      context: .
+      dockerfile: Dockerfile.training
+    image: fraud-training-runner:local
+    profiles: ["training"]
+    volumes:
+      - ./models:/app/models
+      - ./results:/app/results
+      - ./creditcard.csv:/app/creditcard.csv:ro
+      - ./mlflow.db:/app/mlflow.db
+    environment:
+      MLFLOW_TRACKING_URI: sqlite:///mlflow.db

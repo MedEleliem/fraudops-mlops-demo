@@ -1,0 +1,12 @@
+services:
+  fraud-serving:
+    build:
+      context: .
+      dockerfile: Dockerfile.serving
+    image: fraud-serving:local
+    ports:
+      - "8080:8080"
+    environment:
+      FRAUD_SERVING_MODEL_DIR: models/production
+    volumes:
+      - ./models/production:/app/models/production:ro

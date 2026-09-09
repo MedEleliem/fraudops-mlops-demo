@@ -1,0 +1,32 @@
+{
+  "version": "fraud-logit-2026-08-06-41233Z",
+  "created_at": "2026-08-06T14:14:31Z",
+  "git_commit": "a2ccf54",
+  "source_branch": "master",
+  "params_path": "models/versions/fraud-logit-2026-08-06-41233Z/params.yaml",
+  "metrics_path": "models/versions/fraud-logit-2026-08-06-41233Z/metrics.json",
+  "artifacts": {
+    "manifest": "models/versions/fraud-logit-2026-08-06-41233Z/manifest.json",
+    "params": "models/versions/fraud-logit-2026-08-06-41233Z/params.yaml",
+    "metrics": "models/versions/fraud-logit-2026-08-06-41233Z/metrics.json",
+    "model_pickle": "models/versions/fraud-logit-2026-08-06-41233Z/logit.pkl",
+    "selected_features_pickle": "models/versions/fraud-logit-2026-08-06-41233Z/finalvar.pkl",
+    "model_summary": "models/versions/fraud-logit-2026-08-06-41233Z/model_summary.txt",
+    "balanced_test_report": "models/versions/fraud-logit-2026-08-06-41233Z/classification_report_ns.txt",
+    "full_dataset_report": "models/versions/fraud-logit-2026-08-06-41233Z/classification_report_wd.txt",
+    "balanced_test_accuracy": "models/versions/fraud-logit-2026-08-06-41233Z/accuracy_ns.json",
+    "full_dataset_accuracy": "models/versions/fraud-logit-2026-08-06-41233Z/accuracy_wd.json"
+  },
+  "artifact_hashes": {
+    "params": "fef659b28cbe4703cdb57ec429f64c20a90a35ed2695636ed853ccde1af4c6fc",
+    "metrics": "054b9b559b6083379776ee42869413b71759e0ddad4969883bb9342b91079c47",
+    "model_pickle": "a3d1454f462723aad50eb1b97abee305b6fde726f811ecb4eb85758fe063489c",
+    "selected_features_pickle": "f016ecfaaa2786f3124e0f2a1412ea3e69e4517cee5ef2d9074704e7d23bd98f",
+    "model_summary": "ce31f8c8729eea04a3bd8811c60ab821604731554630714475eccb866baf3d3e",
+    "balanced_test_report": "84d7db511c603b3ab7bfb4e596e9a078c6485069b8b24b29a95dd7ca9f936978",
+    "full_dataset_report": "66e0f395b11a21bc94710d79d8a8365b15ea1427558209f49721073f21d109a8",
+    "balanced_test_accuracy": "6f07f00abc4453a538be2efadeac5e3c319aa43f16bf57916783c842063d2456",
+    "full_dataset_accuracy": "12e6d814d1afa877f8dab4a62ad80c56481e410ae1281cfbe96574d3733591ae"
+  },
+  "serving_image": "fraud-serving:fraud-logit-2026-08-06-41233Z"
+}

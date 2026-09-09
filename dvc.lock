@@ -1,0 +1,174 @@
+schema: '2.0'
+stages:
+  resample data:
+    cmd: python src/Resampling.py 
+      results/after_resampling/NFvsF_after_undersampling.json 
+      results/after_resampling/Distrib_after_undersampling.png 
+      results/after_resampling/Corr_matrices_comp.png
+    deps:
+    - path: creditcard.csv
+      md5: e90efcb83d69faf99fcab8b0255024de
+      size: 150828752
+    - path: src/Resampling.py
+      hash: md5
+      md5: f0b240b922a351c6a3cba1ad499f13ee
+      size: 4142
+    params:
+      params.yaml:
+        resample_data.param: 1
+        resample_data.percentage: 0.55
+    outs:
+    - path: balanced-data.csv
+      hash: md5
+      md5: b3bd6e8482f06ea985edccd75867aa21
+      size: 728534
+    - path: results/after_resampling/Corr_matrices_comp.png
+      hash: md5
+      md5: 05ccc62d55abb7981b5c175195561007
+      size: 170309
+    - path: results/after_resampling/Distrib_after_undersampling.png
+      hash: md5
+      md5: c44e57dacf462130d5cf6c08ca045243
+      size: 38499
+    - path: results/after_resampling/NFvsF_after_undersampling.json
+      hash: md5
+      md5: c184f54912270dbdbf6919e3a0bbd7e7
+      size: 35
+  splitting data:
+    cmd: python src/prepare.py
+    deps:
+    - path: balanced-data.csv
+      hash: md5
+      md5: b3bd6e8482f06ea985edccd75867aa21
+      size: 728534
+    - path: src/prepare.py
+      hash: md5
+      md5: e1af7395b03040bc00d14c96ebff1cbd
+      size: 867
+    params:
+      params.yaml:
+        splitting_data.split-param: 0.2
+    outs:
+    - path: results/splited_data/test_features.csv
+      hash: md5
+      md5: 0688469a8a7bd137e09a206b39f98131
+      size: 143274
+    - path: results/splited_data/test_labels.csv
+      hash: md5
+      md5: ef2ba69beda1cf549d11b25990ac9714
+      size: 562
+    - path: results/splited_data/train_features.csv
+      hash: md5
+      md5: 17513fc0191f8dc7f6e935ba3cb7c8c2
+      size: 570962
+    - path: results/splited_data/train_labels.csv
+      hash: md5
+      md5: d6eeb0f7f0e177f64d6ecf94bb1aecff
+      size: 2222
+  train model:
+    cmd: python src/train.py results/finalvar.pkl results/logit.pkl 
+      results/model_summary.txt
+    deps:
+    - path: results/splited_data/train_features.csv
+      hash: md5
+      md5: 17513fc0191f8dc7f6e935ba3cb7c8c2
+      size: 570962
+    - path: results/splited_data/train_labels.csv
+      hash: md5
+      md5: d6eeb0f7f0e177f64d6ecf94bb1aecff
+      size: 2222
+    - path: src/train.py
+      hash: md5
+      md5: efa8ace8f799a5acaa6d58c54cc48989
+      size: 1715
+    outs:
+    - path: results/finalvar.pkl
+      hash: md5
+      md5: dc9532231aee55f85da79b009814660e
+      size: 64
+    - path: results/logit.pkl
+      hash: md5
+      md5: f841803dde88dab421cdfc9a6fe1a51f
+      size: 191036
+    - path: results/model_summary.txt
+      hash: md5
+      md5: 8a441176b6e2d8716ed6e33960a07388
+      size: 1948
+  test model:
+    cmd: python src/test.py results/finalvar.pkl results/logit.pkl 
+      results/accuracy_ns.json results/confusionmatrix_ns.png 
+      results/classification_report_ns.txt results/accuracy_wd.json 
+      results/confusionmatrix_wd.png results/classification_report_wd.txt
+    deps:
+    - path: creditcard.csv
+      md5: e90efcb83d69faf99fcab8b0255024de
+      size: 150828752
+    - path: results/finalvar.pkl
+      hash: md5
+      md5: dc9532231aee55f85da79b009814660e
+      size: 64
+    - path: results/logit.pkl
+      hash: md5
+      md5: f841803dde88dab421cdfc9a6fe1a51f
+      size: 191036
+    - path: results/splited_data/test_features.csv
+      hash: md5
+      md5: 0688469a8a7bd137e09a206b39f98131
+      size: 143274
+    - path: results/splited_data/test_labels.csv
+      hash: md5
+      md5: ef2ba69beda1cf549d11b25990ac9714
+      size: 562
+    - path: src/test.py
+      md5: b3899b96da96f37182da868c63e37094
+      size: 2755
+    outs:
+    - path: results/accuracy_ns.json
+      hash: md5
+      md5: e1f69967fd89a9d3490e28dc0bb4f364
+      size: 38
+    - path: results/accuracy_wd.json
+      hash: md5
+      md5: 149bb0f6b978a4b6a335597234fda39d
+      size: 38
+    - path: results/classification_report_ns.txt
+      hash: md5
+      md5: 3e260fbcbe6a2da284330a3110ef2c37
+      size: 326
+    - path: results/classification_report_wd.txt
+      hash: md5
+      md5: 1c351fb8c057d86659d17de7b2017c4a
+      size: 326
+    - path: results/confusionmatrix_ns.png
+      hash: md5
+      md5: b394fd58627d8d9def23295bf3c3ca53
+      size: 19925
+    - path: results/confusionmatrix_wd.png
+      hash: md5
+      md5: a2168effb60388170fcb64f136316a64
+      size: 21549
+  understand data:
+    cmd: python src/data_understanding.py 
+      results/before_resampling/NFvsF_before_undersampling.json 
+      results/before_resampling/Count_before_undersampling.png 
+      results/before_resampling/distrib_before_undersampling.png
+    deps:
+    - path: creditcard.csv
+      md5: e90efcb83d69faf99fcab8b0255024de
+      size: 150828752
+    - path: src/data_understanding.py
+      hash: md5
+      md5: 768c59bd56959be988617d9bcc75aea6
+      size: 1868
+    outs:
+    - path: results/before_resampling/Count_before_undersampling.png
+      hash: md5
+      md5: 956ad93b7adc0e3cc8caedc3b93fc69f
+      size: 16586
+    - path: results/before_resampling/NFvsF_before_undersampling.json
+      md5: 640cfb76f2deb8e77b2a4b76f1e90eff
+      size: 38
+    - path: results/before_resampling/distrib_before_undersampling.png
+      hash: md5
+      md5: 26f727680da1c3f30684d81a20c7bb43
+      size: 27087

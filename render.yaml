@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: fraudops-serving-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.serving
+    healthCheckPath: /health
+    envVars:
+      - key: FRAUD_SERVING_MODEL_DIR
+        value: models/production

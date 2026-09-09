@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FraudOps Control</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/registry.css') }}">
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="/">
+          <span class="brand-mark"><i data-lucide="shield-check"></i></span>
+          <span><strong>FraudOps</strong><small>Model control</small></span>
+        </a>
+        <nav class="nav" aria-label="Navigation principale">
+          <a class="active" href="#overview"><i data-lucide="layout-dashboard"></i><span>Vue d'ensemble</span></a>
+          <a href="/runs"><i data-lucide="git-compare-arrows"></i><span>Runs & différences</span></a>
+          <a href="#registry"><i data-lucide="history"></i><span>Versions</span></a>
+          <a href="#parameters"><i data-lucide="sliders-horizontal"></i><span>Nouveau run</span></a>
+          <a href="/project"><i data-lucide="presentation"></i><span>Présentation</span></a>
+          <a href="/docs"><i data-lucide="braces"></i><span>API</span></a>
+        </nav>
+        <div class="side-release">
+          <span class="status-dot"></span>
+          <div><small>{{ 'En production' if has_production else 'Candidate de référence' }}</small><strong>{{ active.version }}</strong></div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar" id="overview">
+          <button class="mobile-menu icon-only" id="mobile-menu" type="button" title="Ouvrir le menu"><i data-lucide="menu"></i></button>
+          <div>
+            <p class="kicker">Model Registry</p>
+            <h1>Modèles de détection de fraude</h1>
+            <p>{{ registry.versions|length }} version{{ 's' if registry.versions|length != 1 else '' }} enregistrée{{ 's' if registry.versions|length != 1 else '' }} · Production : {{ active.version if has_production else 'non définie' }}</p>
+          </div>
+          <div class="top-actions">
+            <a class="button subtle" href="/project"><i data-lucide="play-circle"></i>Voir le projet</a>
+            <a class="button primary" href="#parameters"><i data-lucide="plus"></i>Nouveau run</a>
+          </div>
+        </header>
+
+        <section class="executive-grid" aria-label="Indicateurs clés">
+          {% set headline = dashboard.selected_card.metrics %}
+          {% for metric in headline[3:7] %}
+          <article class="kpi-card reveal">
+            <span class="kpi-icon"><i data-lucide="{{ ['scan-search','target','activity','gauge'][loop.index0] }}"></i></span>
+            <div><small>{{ metric.label }}</small><strong>{{ "%.1f"|format(metric.value * 100) if metric.value is not none else "--" }}<em>%</em></strong></div>
+            {% set comparison = dashboard.comparison_metrics[loop.index0 + 3] if dashboard.comparison_metrics|length > loop.index0 + 3 else none %}
+            <span class="trend {{ 'up' if comparison and comparison.delta is not none and comparison.delta >= 0 else 'down' }}">
+              {% if comparison and comparison.delta is not none %}{{ "%+.2f"|format(comparison.delta * 100) }} pt{% else %}référence{% endif %}
+            </span>
+          </article>
+          {% endfor %}
+        </section>
+
+        <section class="decision-panel reveal">
+          <div class="decision-copy">
+            <span class="section-icon"><i data-lucide="{{ 'circle-check-big' if diff.gate.passed else 'circle-alert' }}"></i></span>
+            <div>
+              <p class="kicker">Promotion</p>
+              <h2>{{ "Candidate prête pour validation" if diff.gate.passed else "Validation bloquée" }}</h2>
+              <p>{{ "Métriques critiques conformes. Artefacts de serving disponibles." if diff.gate.passed else diff.gate.issues|length|string + " contrôle(s) en échec. Consultez la comparaison avant de promouvoir cette version." }}</p>
+            </div>
+          </div>
+          <button class="button primary" id="approve-model" type="button"><i data-lucide="rocket"></i>Valider pour production</button>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel chart-panel reveal">
+            <div class="panel-head">
+              <div><p class="kicker">Métriques</p><h2>Historique des versions</h2></div>
+              <div class="legend"><span><i class="recall"></i>Recall</span><span><i class="precision"></i>Precision</span><span><i class="f1"></i>F1</span></div>
+            </div>
+            <div class="chart-wrap"><canvas id="history-chart" aria-label="Historique des métriques"></canvas></div>
+          </article>
+          <aside class="panel release-card reveal">
+            <div class="panel-head"><div><p class="kicker">Version sélectionnée</p><h2>{{ candidate.name }}</h2></div><span class="stage">{{ candidate.stage }}</span></div>
+            <strong class="version-name">{{ candidate.version }}</strong>
+            <dl>
+              <div><dt>Date</dt><dd>{{ candidate.trained_at[:10] }}</dd></div>
+              <div><dt>Algorithme</dt><dd>{{ candidate.algorithm }}</dd></div>
+              <div><dt>Variables</dt><dd>{{ candidate.features_count }}</dd></div>
+              <div><dt>Seuil</dt><dd>{{ "%.2f"|format(candidate.threshold) }}</dd></div>
+            </dl>
+            <div class="release-actions">
+              <button class="button subtle" id="rerun-model" type="button"><i data-lucide="refresh-cw"></i>Relancer cette version</button>
+              <a class="icon-only" href="/api/models/{{ candidate.version }}" title="Ouvrir les métadonnées JSON"><i data-lucide="file-json"></i></a>
+            </div>
+            <p class="action-status" id="model-action-status" role="status"></p>
+          </aside>
+        </section>
+
+        <section class="panel registry-panel reveal" id="registry">
+          <div class="panel-head">
+            <div><p class="kicker">Registry</p><h2>Versions du modèle</h2><p>Date d'entraînement, statut, scores et disponibilité des artefacts.</p></div>
+            <div class="search-field"><i data-lucide="search"></i><input id="version-search" type="search" placeholder="Rechercher une version"></div>
+          </div>
+          <div class="version-table">
+            <div class="version-row table-head"><span>Version</span><span>Date</span><span>Statut</span><span>Recall</span><span>F1</span><span>Artefacts</span><span></span></div>
+            {% for model in dashboard.model_rows %}
+            <a class="version-row {{ 'selected' if model.version == candidate.version else '' }}" data-version-row data-search="{{ model.version }} {{ model.name }} {{ model.trained_at }}" href="/?model={{ model.version }}&baseline={{ candidate.version if model.version != candidate.version else comparison_baseline.version }}#overview">
+              <span><i data-lucide="box"></i><strong>{{ model.name }}</strong><small>{{ model.version }}</small></span>
+              <span>{{ model.trained_at[:10] }}</span>
+              <span><em class="status-pill {{ model.stage }}">{{ model.stage }}</em></span>
+              <span>{{ "%.1f%%"|format(model.recall * 100) if model.recall is not none else "--" }}</span>
+              <span>{{ "%.1f%%"|format(model.f1 * 100) if model.f1 is not none else "--" }}</span>
+              <span>{{ model.artifacts_ready }}/{{ model.artifacts_total }}</span>
+              <span><i data-lucide="chevron-right"></i></span>
+            </a>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="panel compare-panel reveal" id="compare">
+          <div class="panel-head">
+            <div><p class="kicker">Comparaison</p><h2>{{ comparison_baseline.version[-7:] }} → {{ candidate.version[-7:] }}</h2><p>Écart des scores entre la référence et la version sélectionnée.</p></div>
+            <span class="gate-chip {{ 'pass' if diff.gate.passed else 'review' }}"><i data-lucide="{{ 'check' if diff.gate.passed else 'alert-triangle' }}"></i>{{ "Contrôles validés" if diff.gate.passed else "À examiner" }}</span>
+          </div>
+          <div class="compare-picker">
+            <label><span>Version de référence</span><select id="compare-baseline">{% for model in registry.versions %}<option value="{{ model.version }}" {{ "selected" if model.version == comparison_baseline.version else "" }}>{{ model.version }} · {{ model.trained_at[:10] }}</option>{% endfor %}</select></label>
+            <button class="icon-only" id="swap-comparison" type="button" title="Inverser les versions"><i data-lucide="arrow-left-right"></i></button>
+            <label><span>Version à évaluer</span><select id="compare-candidate">{% for model in registry.versions %}<option value="{{ model.version }}" {{ "selected" if model.version == candidate.version else "" }}>{{ model.version }} · {{ model.trained_at[:10] }}</option>{% endfor %}</select></label>
+            <button class="button primary" id="run-comparison" type="button"><i data-lucide="git-compare"></i>Comparer</button>
+          </div>
+          <div class="comparison-content">
+            <div class="chart-wrap radar"><canvas id="comparison-chart" aria-label="Comparaison des scores"></canvas></div>
+            <div class="metric-deltas">
+              {% for metric in dashboard.comparison_metrics %}
+              <article><span>{{ metric.label }}</span><strong>{{ "%.1f"|format((metric.after or 0) * 100) }}%</strong><em class="{{ 'positive' if metric.delta is not none and metric.delta >= 0 else 'negative' }}">{{ "%+.2f"|format((metric.delta or 0) * 100) }} pt</em><small>Référence {{ "%.1f"|format((metric.before or 0) * 100) }}%</small></article>
+              {% endfor %}
+            </div>
+          </div>
+          <details class="technical-diffs"><summary><i data-lucide="list-tree"></i>Voir les paramètres et artefacts modifiés</summary>
+            <div class="detail-columns">
+              <div><h3>Paramètres</h3>{% for key, item in diff.param_diffs.items() %}<p><span>{{ key }}</span><strong>{{ item.before }} → {{ item.after }}</strong></p>{% else %}<p><span>Aucun changement</span><strong>Identiques</strong></p>{% endfor %}</div>
+              <div><h3>Artefacts</h3>{% for artifact in diff.artifact_diffs %}<p><span>{{ artifact.name }}</span><strong class="{{ 'ok' if artifact.after_exists else 'warn' }}">{{ "Disponible" if artifact.after_exists else "Manquant" }}</strong></p>{% endfor %}</div>
+            </div>
+          </details>
+          <a class="button subtle full-diff-link" href="/runs?model={{ candidate.version }}&baseline={{ comparison_baseline.version }}"><i data-lucide="git-compare-arrows"></i>Ouvrir l'analyse complète des runs</a>
+        </section>
+
+        <section class="panel experiment-panel reveal" id="parameters">
+          <div class="panel-head"><div><p class="kicker">Entraînement</p><h2>Créer un run</h2><p>Version de base : {{ candidate.version }}. La production ne sera pas modifiée.</p></div><span class="stage">Base {{ candidate.version[-10:] }}</span></div>
+          <form id="parameter-form" class="experiment-form">
+            <div class="form-section"><h3><span>1</span>Run</h3><label class="wide"><span>Nom</span><input name="name" value="Ajustement du seuil fraude" required></label><label class="wide"><span>Commentaire</span><textarea name="note" rows="2" required>Test du seuil de classification.</textarea></label></div>
+            <div class="form-section"><h3><span>2</span>Modèle</h3><label><span>Seuil de fraude</span><input name="threshold" type="number" min="0" max="1" step="0.01" value="{{ candidate.threshold }}"></label><label><span>P-value</span><input name="p_value" type="number" min="0.001" max="0.2" step="0.001" value="{{ candidate.params.get('train_model', {}).get('p-value', 0.05) }}"></label><label><span>Part de test</span><input name="split_param" type="number" min="0.05" max="0.5" step="0.01" value="{{ candidate.params.get('splitting_data', {}).get('split-param', 0.2) }}"></label></div>
+            <div class="form-section"><h3><span>3</span>Échantillonnage</h3><label><span>Méthode</span><select name="resample_param"><option value="1">Sous-échantillonnage</option><option value="2">Sur-échantillonnage</option><option value="3">SMOTE</option></select></label><label><span>Proportion</span><input name="percentage" type="number" min="0" max="1" step="0.05" value="{{ candidate.params.get('resample_data', {}).get('percentage', 1) }}"></label><input name="elimination_criteria" type="hidden" value="bic"><input name="model_type" type="hidden" value="logistic"></div>
+            <div class="form-footer"><p id="form-status" role="status"><i data-lucide="info"></i>Exécution DVC avec suivi MLflow.</p><div><button class="button subtle" id="save-draft" type="button"><i data-lucide="save"></i>Enregistrer</button><button class="button primary" type="submit"><i data-lucide="play"></i>Lancer l'entraînement</button></div></div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        if (window.lucide) lucide.createIcons();
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const history = {{ dashboard.metric_history|tojson }};
+        const radar = {{ dashboard.score_radar|tojson }};
+        if (window.Chart) {
+          Chart.defaults.font.family = "DM Sans";
+          Chart.defaults.color = "#697386";
+          new Chart(document.getElementById("history-chart"), {type:"line",data:{labels:history.map(x=>x.trained_at.slice(0,10)),datasets:[
+            {label:"Recall",data:history.map(x=>x.recall),borderColor:"#006d77",backgroundColor:"rgba(0,109,119,.10)",fill:true,tension:.35,pointRadius:4},
+            {label:"Precision",data:history.map(x=>x.precision),borderColor:"#e76f51",tension:.35,pointRadius:4},
+            {label:"F1",data:history.map(x=>x.f1),borderColor:"#3157a4",tension:.35,pointRadius:4}
+          ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:reduceMotion?0:900},plugins:{legend:{display:false}},scales:{y:{min:0,max:1,ticks:{format:{style:"percent"}},grid:{color:"#edf0f4"}},x:{grid:{display:false}}}}});
+          new Chart(document.getElementById("comparison-chart"), {type:"radar",data:{labels:radar.map(x=>x.label),datasets:[
+            {label:"Référence",data:radar.map(x=>x.baseline),borderColor:"#a8b0bd",backgroundColor:"rgba(168,176,189,.12)",pointRadius:3},
+            {label:"Version évaluée",data:radar.map(x=>x.selected),borderColor:"#006d77",backgroundColor:"rgba(0,109,119,.16)",pointRadius:4}
+          ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:reduceMotion?0:1000},scales:{r:{min:0,max:1,ticks:{display:false},grid:{color:"#e3e8ee"},angleLines:{color:"#e3e8ee"}}},plugins:{legend:{position:"bottom",labels:{usePointStyle:true,boxWidth:8}}}}});
+        }
+
+        const qs = (s) => document.querySelector(s);
+        const toast = (message, error=false) => { const el=qs("#toast"); el.textContent=message; el.className=`toast show ${error?"error":""}`; setTimeout(()=>el.className="toast",3200); };
+        qs("#mobile-menu")?.addEventListener("click",()=>qs("#sidebar").classList.toggle("open"));
+        qs("#version-search")?.addEventListener("input",(e)=>document.querySelectorAll("[data-version-row]").forEach(row=>row.hidden=!row.dataset.search.toLowerCase().includes(e.target.value.toLowerCase())));
+        qs("#run-comparison")?.addEventListener("click",()=>location.href=`/?model=${qs("#compare-candidate").value}&baseline=${qs("#compare-baseline").value}#compare`);
+        qs("#swap-comparison")?.addEventListener("click",()=>{const a=qs("#compare-baseline"),b=qs("#compare-candidate"),v=a.value;a.value=b.value;b.value=v;});
+
+        const form=qs("#parameter-form"), status=qs("#form-status");
+        const payload=()=>{const d=new FormData(form);return {name:d.get("name"),base_version:"{{ candidate.version }}",threshold:Number(d.get("threshold")),note:d.get("note"),params:{resample_data:{param:Number(d.get("resample_param")),percentage:Number(d.get("percentage"))},splitting_data:{"split-param":Number(d.get("split_param"))},train_model:{model_type:d.get("model_type"),elimination_criteria:d.get("elimination_criteria"),varchar_process:"dummy_dropfirst","p-value":Number(d.get("p_value"))}}};};
+        async function createDraft(){const r=await fetch("/api/admin/drafts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload())});if(!r.ok)throw new Error("Impossible d'enregistrer l'essai");return r.json();}
+        qs("#save-draft")?.addEventListener("click",async()=>{try{await createDraft();toast("Brouillon enregistré.");}catch(e){toast(e.message,true);}});
+        form?.addEventListener("submit",async(e)=>{e.preventDefault();status.innerHTML="Run DVC en cours…";try{const d=await createDraft();const r=await fetch(`/api/admin/drafts/${d.id}/submit`,{method:"POST"});if(!r.ok)throw new Error("L'entraînement n'a pas pu démarrer");toast("Run terminé.");setTimeout(()=>location.reload(),900);}catch(err){status.textContent=err.message;toast(err.message,true);}});
+        qs("#approve-model")?.addEventListener("click",async()=>{const r=await fetch("/api/admin/models/{{ candidate.version }}/approve",{method:"POST"});if(r.ok){toast("Version validée pour la production.");setTimeout(()=>location.reload(),800);}else{const e=await r.json();toast(e.detail||"Validation impossible",true);}});
+        qs("#rerun-model")?.addEventListener("click",async()=>{const s=qs("#model-action-status");s.textContent="Reproduction de la version en cours…";const r=await fetch("/api/admin/models/{{ candidate.version }}/retrain",{method:"POST"});if(r.ok){toast("La version a été reproduite avec ses paramètres d'origine.");setTimeout(()=>location.reload(),900);}else{const e=await r.json();s.textContent=e.detail||"Relance impossible";toast(s.textContent,true);}});
+      });
+    </script>
+  </body>
+</html>

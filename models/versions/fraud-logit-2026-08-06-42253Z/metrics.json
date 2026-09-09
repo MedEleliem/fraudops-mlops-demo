@@ -1,0 +1,14 @@
+{
+  "balanced_test": {
+    "accuracy": 0.9565217391304348,
+    "fraud_precision": 0.96,
+    "fraud_recall": 0.94,
+    "fraud_f1": 0.95
+  },
+  "full_dataset": {
+    "accuracy": 0.97363477723511,
+    "fraud_precision": 0.06,
+    "fraud_recall": 0.91,
+    "fraud_f1": 0.11
+  }
+}

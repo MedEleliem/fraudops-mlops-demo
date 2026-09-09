@@ -1,0 +1,31 @@
+{
+  "version": "fraud-logit-2026-08-06-63146Z",
+  "created_at": "2026-08-06T16:32:01Z",
+  "git_commit": "a2ccf54",
+  "source_branch": "master",
+  "params_path": "models/versions/fraud-logit-2026-08-06-63146Z/params.yaml",
+  "metrics_path": "models/versions/fraud-logit-2026-08-06-63146Z/metrics.json",
+  "artifacts": {
+    "manifest": "models/versions/fraud-logit-2026-08-06-63146Z/manifest.json",
+    "params": "models/versions/fraud-logit-2026-08-06-63146Z/params.yaml",
+    "metrics": "models/versions/fraud-logit-2026-08-06-63146Z/metrics.json",
+    "model_pickle": "models/versions/fraud-logit-2026-08-06-63146Z/logit.pkl",
+    "selected_features_pickle": "models/versions/fraud-logit-2026-08-06-63146Z/finalvar.pkl",
+    "model_summary": "models/versions/fraud-logit-2026-08-06-63146Z/model_summary.txt",
+    "balanced_test_report": "models/versions/fraud-logit-2026-08-06-63146Z/classification_report_ns.txt",
+    "full_dataset_report": "models/versions/fraud-logit-2026-08-06-63146Z/classification_report_wd.txt",
+    "balanced_test_accuracy": "models/versions/fraud-logit-2026-08-06-63146Z/accuracy_ns.json",
+    "full_dataset_accuracy": "models/versions/fraud-logit-2026-08-06-63146Z/accuracy_wd.json"
+  },
+  "artifact_hashes": {
+    "params": "6af57fd5182162f62a70381db18f559837620d1269a2372986612349958ea301",
+    "metrics": "e09024f1a72f068e0af2c62af7c3fdd4b7f9a795f4953acdc8d74c512ed8d51a",
+    "model_pickle": "4cd344ea1575d7280552a7bdc30922db1038156f7326da8b625cbc55c3a14576",
+    "selected_features_pickle": "bc3057f8889862b58e480c0e5f968aa02bf828a6f8002c0f65dd1472ffa8c7ad",
+    "model_summary": "690c15cc227515f84500dc3d4568e843d1d34445ef1d14911c834394d807603d",
+    "balanced_test_report": "4314d9d4bf59742ea6fb631cb1e4eb546d908f6ae0f6d64cce04c2877d98820b",
+    "full_dataset_report": "a169a3a00f79ce90f1bdee48bf3399bf5d765cc1955a39a10de2810a79c4b30b",
+    "balanced_test_accuracy": "6be2365051006b428dda9438cb49819a755217ab1c202328cf177bcefe7bb833",
+    "full_dataset_accuracy": "4fb7a0f51a9c7c0f878e0baf62d61078678dba067bf00ba0089ad91df48baeb9"
+  }
+}

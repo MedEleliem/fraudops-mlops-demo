@@ -1,0 +1,502 @@
+{
+  "active_version": "fraud-logit-2026-08-06-41233Z",
+  "versions": [
+    {
+      "version": "fraud-logit-2026-08-06-41233Z",
+      "name": "Stepwise Logistic Fraud Classifier",
+      "stage": "production",
+      "status": "approved",
+      "algorithm": "statsmodels.Logit",
+      "trained_at": "2026-08-06T14:14:31Z",
+      "training_data": "creditcard.csv with DVC pipeline",
+      "git_commit": "a2ccf54",
+      "source_branch": "master",
+      "params": {
+        "resample_data": {
+          "param": 3,
+          "percentage": 0.85
+        },
+        "splitting_data": {
+          "split-param": 0.2
+        },
+        "train_model": {
+          "model_type": "logistic",
+          "elimination_criteria": "aic",
+          "varchar_process": "dummy_dropfirst",
+          "p-value": 0.05
+        }
+      },
+      "threshold": 0.5,
+      "features_count": 28,
+      "features": [
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V17",
+        "V16",
+        "V18",
+        "V6",
+        "V8",
+        "V10",
+        "V20",
+        "V11",
+        "V14",
+        "V12",
+        "V9",
+        "V13",
+        "V22",
+        "V21",
+        "V5",
+        "V19",
+        "V25",
+        "V23",
+        "V28",
+        "V27",
+        "V26",
+        "Amount",
+        "V7",
+        "V15"
+      ],
+      "metrics": [
+        {
+          "name": "accuracy",
+          "value": 0.9808223273481878,
+          "split": "balanced_test",
+          "target_class": null,
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_precision",
+          "value": 0.99,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_recall",
+          "value": 0.97,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_f1",
+          "value": 0.98,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "accuracy",
+          "value": 0.9914468394386374,
+          "split": "full_dataset",
+          "target_class": null,
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_precision",
+          "value": 0.16,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_recall",
+          "value": 0.89,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_f1",
+          "value": 0.27,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        }
+      ],
+      "artifacts": [
+        {
+          "name": "manifest",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/manifest.json",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "params",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/params.yaml",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "metrics",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/metrics.json",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "model_pickle",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/logit.pkl",
+          "required_for_serving": true,
+          "exists": true
+        },
+        {
+          "name": "selected_features_pickle",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/finalvar.pkl",
+          "required_for_serving": true,
+          "exists": true
+        },
+        {
+          "name": "model_summary",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/model_summary.txt",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "balanced_test_report",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/classification_report_ns.txt",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "full_dataset_report",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/classification_report_wd.txt",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "balanced_test_accuracy",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/accuracy_ns.json",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "full_dataset_accuracy",
+          "path": "models/versions/fraud-logit-2026-08-06-41233Z/accuracy_wd.json",
+          "required_for_serving": false,
+          "exists": true
+        }
+      ],
+      "risks": [],
+      "notes": "Generated by scripts/register_model.py after a training pipeline run.\nApproved for client serving image fraud-serving:fraud-logit-2026-08-06-41233Z."
+    },
+    {
+      "version": "fraud-logit-2026-08-06-42253Z",
+      "name": "Stepwise Logistic Fraud Classifier",
+      "stage": "development",
+      "status": "candidate",
+      "algorithm": "statsmodels.Logit",
+      "trained_at": "2026-08-06T14:23:00Z",
+      "training_data": "creditcard.csv with DVC pipeline",
+      "git_commit": "a2ccf54",
+      "source_branch": "master",
+      "params": {
+        "resample_data": {
+          "param": 1,
+          "percentage": 0.75
+        },
+        "splitting_data": {
+          "split-param": 0.2
+        },
+        "train_model": {
+          "model_type": "logistic",
+          "elimination_criteria": "bic",
+          "varchar_process": "dummy_dropfirst",
+          "p-value": 0.05
+        }
+      },
+      "threshold": 0.5,
+      "features_count": 5,
+      "features": [
+        "V4",
+        "V12",
+        "V14",
+        "V3",
+        "V28"
+      ],
+      "metrics": [
+        {
+          "name": "accuracy",
+          "value": 0.9565217391304348,
+          "split": "balanced_test",
+          "target_class": null,
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_precision",
+          "value": 0.96,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_recall",
+          "value": 0.94,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_f1",
+          "value": 0.95,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "accuracy",
+          "value": 0.97363477723511,
+          "split": "full_dataset",
+          "target_class": null,
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_precision",
+          "value": 0.06,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_recall",
+          "value": 0.91,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_f1",
+          "value": 0.11,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        }
+      ],
+      "artifacts": [
+        {
+          "name": "manifest",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/manifest.json",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "params",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/params.yaml",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "metrics",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/metrics.json",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "model_pickle",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/logit.pkl",
+          "required_for_serving": true,
+          "exists": true
+        },
+        {
+          "name": "selected_features_pickle",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/finalvar.pkl",
+          "required_for_serving": true,
+          "exists": true
+        },
+        {
+          "name": "model_summary",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/model_summary.txt",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "balanced_test_report",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/classification_report_ns.txt",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "full_dataset_report",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/classification_report_wd.txt",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "balanced_test_accuracy",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/accuracy_ns.json",
+          "required_for_serving": false,
+          "exists": true
+        },
+        {
+          "name": "full_dataset_accuracy",
+          "path": "models/versions/fraud-logit-2026-08-06-42253Z/accuracy_wd.json",
+          "required_for_serving": false,
+          "exists": true
+        }
+      ],
+      "risks": [
+        {
+          "level": "high",
+          "message": "Fraud precision is 0.06 on the full dataset."
+        }
+      ],
+      "notes": "Generated by scripts/register_model.py after a training pipeline run."
+    },
+    {
+      "version": "fraud-logit-2026-08-06-63146Z",
+      "name": "Stepwise Logistic Fraud Classifier",
+      "stage": "development",
+      "status": "candidate",
+      "algorithm": "statsmodels.Logit",
+      "trained_at": "2026-08-06T16:32:01Z",
+      "training_data": "creditcard.csv with DVC pipeline",
+      "git_commit": "a2ccf54",
+      "source_branch": "master",
+      "params": {
+        "resample_data": {
+          "param": 1,
+          "percentage": 0.55
+        },
+        "splitting_data": {
+          "split-param": 0.2
+        },
+        "train_model": {
+          "model_type": "logistic",
+          "elimination_criteria": "bic",
+          "varchar_process": "dummy_dropfirst",
+          "p-value": 0.05
+        }
+      },
+      "threshold": 0.5,
+      "features_count": 8,
+      "features": [
+        "V4",
+        "V12",
+        "V14",
+        "V8",
+        "Amount",
+        "V6",
+        "V11",
+        "V16"
+      ],
+      "metrics": [
+        {
+          "name": "accuracy",
+          "value": 0.9568345323741008,
+          "split": "balanced_test",
+          "target_class": null,
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_precision",
+          "value": 0.95,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_recall",
+          "value": 0.93,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_f1",
+          "value": 0.94,
+          "split": "balanced_test",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "accuracy",
+          "value": 0.9757379558788934,
+          "split": "full_dataset",
+          "target_class": null,
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_precision",
+          "value": 0.06,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_recall",
+          "value": 0.91,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        },
+        {
+          "name": "fraud_f1",
+          "value": 0.11,
+          "split": "full_dataset",
+          "target_class": "1",
+          "higher_is_better": true
+        }
+      ],
+      "artifacts": [
+        {
+          "required_for_serving": false,
+          "name": "manifest",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/manifest.json"
+        },
+        {
+          "required_for_serving": false,
+          "name": "params",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/params.yaml"
+        },
+        {
+          "required_for_serving": false,
+          "name": "metrics",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/metrics.json"
+        },
+        {
+          "required_for_serving": true,
+          "name": "model_pickle",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/logit.pkl"
+        },
+        {
+          "required_for_serving": true,
+          "name": "selected_features_pickle",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/finalvar.pkl"
+        },
+        {
+          "required_for_serving": false,
+          "name": "model_summary",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/model_summary.txt"
+        },
+        {
+          "required_for_serving": false,
+          "name": "balanced_test_report",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/classification_report_ns.txt"
+        },
+        {
+          "required_for_serving": false,
+          "name": "full_dataset_report",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/classification_report_wd.txt"
+        },
+        {
+          "required_for_serving": false,
+          "name": "balanced_test_accuracy",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/accuracy_ns.json"
+        },
+        {
+          "required_for_serving": false,
+          "name": "full_dataset_accuracy",
+          "path": "models/versions/fraud-logit-2026-08-06-63146Z/accuracy_wd.json"
+        }
+      ],
+      "risks": [
+        {
+          "level": "high",
+          "message": "Fraud precision is 0.06 on the full dataset."
+        }
+      ],
+      "notes": "Generated by scripts/register_model.py after a training pipeline run."
+    }
+  ]
+}

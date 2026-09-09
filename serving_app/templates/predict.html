@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FraudOps · Analyse transaction</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="{{ url_for('serving_static', path='/css/serving.css') }}"><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script></head>
+<body>
+  <header class="service-nav"><a class="brand" href="/"><span><i data-lucide="shield-check"></i></span><strong>FraudOps</strong></a><div class="service-state {{ 'ready' if model_ready else 'waiting' }}"><i data-lucide="{{ 'radio' if model_ready else 'clock-3' }}"></i><span>{{ "Service disponible" if model_ready else "Modèle en attente" }}</span></div></header>
+  <main class="client-shell">
+    <section class="page-heading"><div><p>Scoring</p><h1>Nouvelle transaction</h1><span>Modèle : <strong>{{ model_version }}</strong></span></div><a href="/docs" class="icon-button" title="Documentation de l’API"><i data-lucide="braces"></i></a></section>
+    <section class="prediction-layout">
+      <form id="prediction-form" class="transaction-form">
+        <div class="form-heading"><span>1</span><div><h2>Données de la transaction</h2><p>Time, Amount et composantes PCA.</p></div><em>30 variables</em></div>
+        <div class="essential-fields"><label><span>Temps écoulé <small>secondes</small></span><div class="input-shell"><i data-lucide="clock-3"></i><input name="Time" type="number" step="0.01" value="0" required></div></label><label><span>Montant <small>EUR</small></span><div class="input-shell"><i data-lucide="credit-card"></i><input name="Amount" type="number" step="0.01" min="0" value="0" required></div></label></div>
+        <details class="advanced-fields"><summary><span><i data-lucide="sliders-horizontal"></i>Variables anonymisées du jeu de données</span><i data-lucide="chevron-down"></i></summary><div class="feature-grid">{% for feature in features if feature not in ["Time", "Amount"] %}<label><span>{{ feature }}</span><input name="{{ feature }}" type="number" step="0.000001" value="0"></label>{% endfor %}</div></details>
+        <div class="form-actions"><button type="reset" class="button secondary"><i data-lucide="rotate-ccw"></i>Réinitialiser</button><button type="submit" class="button primary" {{ "" if model_ready else "disabled" }}><i data-lucide="scan-search"></i>Analyser la transaction</button></div>
+      </form>
+      <aside class="result-panel {{ 'ready' if model_ready else 'locked' }}" id="result-panel">
+        <div class="result-head"><span>2</span><div><h2>Décision</h2><p>Calculée par le modèle déployé</p></div></div>
+        <div class="score-gauge" id="score-gauge" style="--score:0"><div><i data-lucide="{{ 'shield' if model_ready else 'lock-keyhole' }}"></i><strong id="probability">--</strong><small>risque de fraude</small></div></div>
+        <div class="decision-copy"><span id="decision-icon"><i data-lucide="{{ 'circle-dashed' if model_ready else 'circle-off' }}"></i></span><div><small>Résultat</small><strong id="prediction-label">{{ "Prêt pour l’analyse" if model_ready else "Aucun modèle déployé" }}</strong></div></div>
+        <p class="result-detail" id="prediction-details">{{ "Lancez l’analyse pour obtenir une probabilité et une décision." if model_ready else "Le service sera disponible dès qu’une version aura été validée par l’équipe MLOps." }}</p>
+        <dl><div><dt>Version</dt><dd>{{ model_version }}</dd></div><div><dt>Seuil</dt><dd id="threshold">--</dd></div></dl>
+      </aside>
+    </section>
+    <section class="privacy-note"><i data-lucide="shield-check"></i><div><strong>Traitement local au service de prédiction</strong><span>Les valeurs saisies servent uniquement au calcul de cette requête.</span></div></section>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script>window.addEventListener("DOMContentLoaded",()=>{if(window.lucide)lucide.createIcons();const form=document.getElementById("prediction-form"),label=document.getElementById("prediction-label"),details=document.getElementById("prediction-details"),probability=document.getElementById("probability"),gauge=document.getElementById("score-gauge"),panel=document.getElementById("result-panel"),threshold=document.getElementById("threshold"),toast=document.getElementById("toast");const notify=(m,e=false)=>{toast.textContent=m;toast.className=`toast show ${e?"error":""}`;setTimeout(()=>toast.className="toast",2800)};form.addEventListener("submit",async event=>{event.preventDefault();label.textContent="Analyse en cours…";details.textContent="Le modèle examine les variables de la transaction.";panel.classList.add("scoring");const payload=Object.fromEntries(Array.from(new FormData(form).entries()).map(([k,v])=>[k,Number(v)]));try{const response=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),result=await response.json();if(!response.ok)throw new Error(result.detail||"Le service n’est pas disponible");const pct=result.fraud_probability*100;gauge.style.setProperty("--score",pct);probability.textContent=`${pct.toFixed(1)}%`;threshold.textContent=result.threshold.toFixed(2);const fraud=result.prediction===1;panel.classList.toggle("fraud",fraud);panel.classList.toggle("clear",!fraud);label.textContent=fraud?"Transaction à vérifier":"Risque faible";details.textContent=fraud?"Le score dépasse le seuil du modèle. Une vérification humaine est recommandée.":"Le score reste sous le seuil de décision du modèle.";notify("Analyse terminée.")}catch(error){label.textContent="Analyse indisponible";details.textContent=error.message;notify(error.message,true)}finally{panel.classList.remove("scoring")}});form.addEventListener("reset",()=>{gauge.style.setProperty("--score",0);probability.textContent="--";threshold.textContent="--";panel.classList.remove("fraud","clear");label.textContent="Prêt pour l’analyse";details.textContent="Lancez l’analyse pour obtenir une probabilité et une décision."})});</script>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const renderedVersion = {{ model_version|tojson }};
+      async function syncDeployedModel() {
+        try {
+          const response = await fetch("/health", { cache: "no-store" });
+          if (!response.ok) return;
+          const state = await response.json();
+          if (state.model_ready && state.model_version && state.model_version !== renderedVersion) {
+            window.location.reload();
+          }
+        } catch (_) {
+          // The next poll retries when the serving process is restarting.
+        }
+      }
+      window.setInterval(syncDeployedModel, 3000);
+      syncDeployedModel();
+    });
+  </script>
+</body></html>

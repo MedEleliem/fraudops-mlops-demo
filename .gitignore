@@ -1,0 +1,17 @@
+/creditcard.csv
+/balanced-data.csv
+.venv*/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+/.cache/
+/.config/
+/.local-home/
+/mlruns/
+/models/admin_state.json
+/models/**/*.pkl
+/models/versions_archive_*/
+/models/production_previous/
+/.kaggle-data/
+/mlflow.db
+/mlartifacts/

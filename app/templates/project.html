@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FraudOps · Présentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/project.css') }}">
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+  </head>
+  <body>
+    <header class="site-nav">
+      <a class="brand" href="#top"><span><i data-lucide="shield-check"></i></span>FraudOps</a>
+      <nav><a href="#mission">Mission</a><a href="#pipeline">Parcours</a><a href="#performance">Résultats</a><a href="#architecture">Architecture</a></nav>
+      <a class="nav-cta" href="#architecture">Explorer <i data-lucide="arrow-down"></i></a>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero-grid"></div>
+        <div class="hero-content reveal">
+          <p class="eyebrow"><span></span>Détection de fraude, pilotée de bout en bout</p>
+          <h1>Détecter l’exception.<br><em>Garder la décision humaine.</em></h1>
+          <p class="lead">FraudOps relie les données, l’entraînement, la validation et la prédiction en temps réel dans une chaîne traçable.</p>
+          <div class="hero-actions"><a href="#mission" class="button primary">Découvrir le projet <i data-lucide="arrow-down-right"></i></a><span>Deux plateformes · Une seule source de vérité</span></div>
+        </div>
+        <div class="signal-stage" aria-label="Flux de transactions animé">
+          <div class="signal-ring ring-one"></div><div class="signal-ring ring-two"></div><div class="signal-ring ring-three"></div>
+          <div class="signal-core"><i data-lucide="fingerprint"></i><strong>0.17%</strong><span>transactions frauduleuses</span></div>
+          <span class="transaction tx-one">Normal <b>€42.80</b></span><span class="transaction tx-two risk">Alerte <b>€1,249</b></span><span class="transaction tx-three">Normal <b>€18.20</b></span>
+        </div>
+        <div class="scroll-cue"><span></span>Faire défiler</div>
+      </section>
+
+      <section class="mission section" id="mission">
+        <div class="section-intro reveal"><p class="eyebrow">Le point de départ</p><h2>Dans 284 807 transactions, les signaux utiles sont presque invisibles.</h2><p>Le défi n’est pas seulement de prédire. Il faut préserver la détection des fraudes rares, expliquer chaque version et déployer sans interrompre le service.</p></div>
+        <div class="numbers">
+          <article class="number-card reveal"><i data-lucide="rows-3"></i><strong data-count="284807">0</strong><span>transactions analysées</span></article>
+          <article class="number-card reveal"><i data-lucide="scan-search"></i><strong data-count="492">0</strong><span>fraudes observées</span></article>
+          <article class="number-card reveal accent"><i data-lucide="radio-tower"></i><strong>&lt; 100 ms</strong><span>objectif de prédiction</span></article>
+        </div>
+      </section>
+
+      <section class="pipeline section" id="pipeline">
+        <div class="section-intro reveal"><p class="eyebrow">Du changement à la production</p><h2>Chaque décision laisse une trace.</h2></div>
+        <div class="pipeline-line">
+          <article class="step reveal"><span>01</span><i data-lucide="sliders-horizontal"></i><h3>Configurer</h3><p>L’admin ajuste un seuil ou une stratégie d’échantillonnage.</p></article>
+          <article class="step reveal"><span>02</span><i data-lucide="git-branch"></i><h3>Reproduire</h3><p>DVC reconstruit le pipeline avec les mêmes données et paramètres.</p></article>
+          <article class="step reveal"><span>03</span><i data-lucide="brain-circuit"></i><h3>Entraîner</h3><p>Le modèle produit ses scores et ses artefacts versionnés.</p></article>
+          <article class="step reveal"><span>04</span><i data-lucide="git-compare-arrows"></i><h3>Comparer</h3><p>MLflow rapproche la candidate de la dernière version validée.</p></article>
+          <article class="step reveal"><span>05</span><i data-lucide="rocket"></i><h3>Livrer</h3><p>Une image immuable rejoint le serveur de prédiction.</p></article>
+        </div>
+      </section>
+
+      <section class="performance section" id="performance">
+        <div class="performance-head reveal"><div><p class="eyebrow">Une lecture orientée risque</p><h2>Les métriques parlent ensemble.</h2></div><p>Une accuracy élevée peut masquer un modèle inutile sur une classe rare. La décision s’appuie donc sur le recall, la précision et le F1 de la fraude.</p></div>
+        <div class="chart-grid">
+          <article class="chart-card main-chart reveal"><div class="chart-title"><div><span>Évolution des versions</span><strong>Qualité de détection</strong></div><em>Derniers runs</em></div><div class="canvas-wrap"><canvas id="evolution-chart"></canvas></div></article>
+          <article class="chart-card reveal"><div class="chart-title"><div><span>Avant / après</span><strong>Rééquilibrage</strong></div></div><div class="canvas-wrap small"><canvas id="balance-chart"></canvas></div><p class="chart-note"><i data-lucide="info"></i>Le sous-échantillonnage rend la classe fraude visible pendant l’apprentissage.</p></article>
+          <article class="chart-card reveal"><div class="chart-title"><div><span>Profil du modèle</span><strong>Vue à quatre axes</strong></div></div><div class="canvas-wrap small"><canvas id="radar-chart"></canvas></div></article>
+        </div>
+      </section>
+
+      <section class="architecture section" id="architecture">
+        <div class="section-intro reveal"><p class="eyebrow">Séparation des responsabilités</p><h2>Le laboratoire ne touche jamais le service client.</h2><p>L’entraînement et la prédiction vivent sur deux serveurs distincts. Seule une image validée traverse la frontière.</p></div>
+        <div class="architecture-map reveal">
+          <article class="server admin-server"><div class="server-top"><span><i data-lucide="settings-2"></i></span><div><small>Serveur 01</small><h3>Control plane</h3></div><em>Privé</em></div><ul><li><i data-lucide="database"></i>DVC · données versionnées</li><li><i data-lucide="flask-conical"></i>Entraînement isolé</li><li><i data-lucide="chart-no-axes-combined"></i>MLflow · métriques et runs</li><li><i data-lucide="badge-check"></i>Validation MLOps</li></ul></article>
+          <div class="delivery"><span class="delivery-line"></span><div><i data-lucide="package-check"></i><strong>Image validée</strong><small>signée · versionnée · immuable</small></div><span class="delivery-arrow"><i data-lucide="chevron-right"></i></span></div>
+          <article class="server serving-server"><div class="server-top"><span><i data-lucide="zap"></i></span><div><small>Serveur 02</small><h3>Prediction plane</h3></div><em>Temps réel</em></div><ul><li><i data-lucide="shield"></i>Modèle approuvé uniquement</li><li><i data-lucide="credit-card"></i>Saisie transaction client</li><li><i data-lucide="timer"></i>Réponse faible latence</li><li><i data-lucide="activity"></i>Healthcheck et supervision</li></ul></article>
+        </div>
+      </section>
+
+      <section class="closing section reveal"><p class="eyebrow">La promesse</p><h2>Une fraude détectée.<br>Une version expliquée.<br>Une décision assumée.</h2><div class="closing-mark"><i data-lucide="shield-check"></i></div></section>
+    </main>
+    <footer><strong>FraudOps</strong><span>Projet MLOps · Détection de fraude bancaire</span><span>2026</span></footer>
+
+    <script>
+      window.addEventListener("DOMContentLoaded",()=>{
+        if(window.lucide)lucide.createIcons();
+        const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const observer=new IntersectionObserver((entries)=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.14});
+        document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+        const countObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting||e.target.dataset.done)return;e.target.dataset.done="1";const target=Number(e.target.dataset.count),start=performance.now(),duration=reduced?0:1300;const tick=now=>{const p=duration?Math.min(1,(now-start)/duration):1;e.target.textContent=Math.floor(target*(1-Math.pow(1-p,3))).toLocaleString("fr-FR");if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}),{threshold:.5});
+        document.querySelectorAll("[data-count]").forEach(el=>countObserver.observe(el));
+        if(!window.Chart)return;
+        Chart.defaults.font.family="DM Sans";Chart.defaults.color="#718096";
+        const common={responsive:true,maintainAspectRatio:false,animation:{duration:reduced?0:1300,easing:"easeOutQuart"},plugins:{legend:{labels:{usePointStyle:true,boxWidth:8,padding:18}}}};
+        new Chart(document.getElementById("evolution-chart"),{type:"line",data:{labels:["v1.0","v1.1","v1.2","v1.3","v1.4","v1.5"],datasets:[{label:"Recall fraude",data:[.78,.82,.81,.88,.91,.93],borderColor:"#08a88a",backgroundColor:"rgba(8,168,138,.12)",fill:true,tension:.42,pointRadius:4},{label:"Précision fraude",data:[.71,.75,.80,.79,.84,.87],borderColor:"#ff7a59",tension:.42,pointRadius:4},{label:"F1 fraude",data:[.74,.78,.80,.83,.87,.90],borderColor:"#5577e8",tension:.42,pointRadius:4}]},options:{...common,scales:{y:{min:.6,max:1,ticks:{format:{style:"percent"}},grid:{color:"#edf1f5"}},x:{grid:{display:false}}}}});
+        new Chart(document.getElementById("balance-chart"),{type:"bar",data:{labels:["Transactions normales","Fraudes"],datasets:[{label:"Avant",data:[284315,492],backgroundColor:"#dbe1e8",borderRadius:5},{label:"Après",data:[492,492],backgroundColor:"#08a88a",borderRadius:5}]},options:{...common,scales:{y:{type:"logarithmic",grid:{color:"#edf1f5"}},x:{grid:{display:false}}}}});
+        new Chart(document.getElementById("radar-chart"),{type:"radar",data:{labels:["Recall","Précision","F1","Stabilité"],datasets:[{label:"Production",data:[.86,.82,.84,.91],borderColor:"#9aa6b5",backgroundColor:"rgba(154,166,181,.12)"},{label:"Candidate",data:[.93,.87,.90,.89],borderColor:"#08a88a",backgroundColor:"rgba(8,168,138,.18)"}]},options:{...common,scales:{r:{min:0,max:1,ticks:{display:false},grid:{color:"#e5eaf0"},angleLines:{color:"#e5eaf0"}}}}});
+      });
+    </script>
+  </body>
+</html>

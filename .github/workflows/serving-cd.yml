@@ -1,0 +1,31 @@
+name: Serving Image CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      model_version:
+        description: Approved model version to package
+        required: true
+      image_registry:
+        description: Optional registry prefix, for example ghcr.io/org
+        required: false
+        default: ""
+
+jobs:
+  build-serving-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build serving image
+        run: |
+          python scripts/build_serving_image.py \
+            --version "${{ inputs.model_version }}" \
+            --registry "${{ inputs.image_registry }}"
+
+      - name: Deployment handoff
+        run: |
+          echo "Serving image built for model ${{ inputs.model_version }}."
+          echo "In production, push this image to your registry and restart the serving server."
